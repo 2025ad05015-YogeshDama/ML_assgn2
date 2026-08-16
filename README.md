@@ -58,30 +58,20 @@
 **4. View Results**
 
 	The app displays:
-	
-	Performance Metrics (6 metrics):
-	
-	Accuracy
-	
-	AUC (Area Under the ROC Curve)
-	
-	Precision
-	
-	Recall
-	
-	F1 Score
-	
-	Matthews Correlation Coefficient (MCC)
-	
-	Confusion Matrix – a heatmap showing correct/incorrect predictions.
-	
-	Detailed Classification Report – precision, recall, f1‑score per class.
-
+		Performance Metrics (6 metrics):
+		Accuracy
+		AUC (Area Under the ROC Curve)
+		Precision
+		Recall
+		F1 Score
+		Matthews Correlation Coefficient (MCC)
+		Confusion Matrix – a heatmap showing correct/incorrect predictions.
+		Detailed Classification Report – precision, recall, f1‑score per class.
 
 **📎 Live Deployment**
 	The app is deployed on Streamlit Community Cloud and accessible at:
 
-	🔗 Streamlit App Link here : 
+	🔗 Streamlit App Link here : https://mlassgn2-yqpngcj34v8dx4qyckbmnq.streamlit.app/
 
 **🤝 Contributing**
 
