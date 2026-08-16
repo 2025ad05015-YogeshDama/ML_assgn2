@@ -55,33 +55,54 @@ model_names = [
 selected_model = st.sidebar.selectbox("Select Model", model_names)
 model_file = f'model/{selected_model.lower().replace(" ", "_")}.pkl'
 
-# Button to train (or load) the selected model
 train_eval_clicked = st.sidebar.button("⚙️ Train & Evaluate Selected", type="primary", use_container_width=True)
 
-# Also show status of this model
 if os.path.exists(model_file):
     st.sidebar.success(f"✅ {selected_model} is already trained.")
 else:
     st.sidebar.warning(f"⚠️ {selected_model} not trained yet. Click the button to train it.")
 
 # ============================================
-# FILE UPLOAD (Common for all models)
+# FILE UPLOAD / AUTO-LOAD test_data.csv
 # ============================================
-st.header("📂 Upload Test Data")
-uploaded_file = st.file_uploader("Choose a CSV file (must have a 'target' column)", type=['csv'])
+st.header("📂 Test Data")
 
+# Check if test_data.csv exists in the current directory
+default_file = 'test_data.csv'
+uploaded_file = None
+
+# Display file uploader; if default file exists, show it as preloaded
+if os.path.exists(default_file):
+    st.info(f"📄 Using default test data: `{default_file}` (auto‑generated)")
+    # Read the default file
+    default_data = pd.read_csv(default_file)
+    st.success(f"✅ Default data loaded: {default_data.shape[0]} rows, {default_data.shape[1]} columns")
+    with st.expander("🔍 Preview default data"):
+        st.dataframe(default_data.head(10))
+    # Offer the option to upload a different file
+    uploaded_file = st.file_uploader("Or upload a different CSV file (optional)", type=['csv'])
+else:
+    st.warning("⚠️ No default `test_data.csv` found. Please upload a CSV file.")
+    uploaded_file = st.file_uploader("Choose a CSV file (must have a 'target' column)", type=['csv'])
+
+# Determine which data to use: uploaded file takes precedence over default
 if uploaded_file is not None:
     test_data = pd.read_csv(uploaded_file)
-    st.success(f"✅ Data loaded: {test_data.shape[0]} rows, {test_data.shape[1]} columns")
+    st.success(f"✅ Uploaded data loaded: {test_data.shape[0]} rows, {test_data.shape[1]} columns")
     with st.expander("🔍 Preview uploaded data"):
         st.dataframe(test_data.head(10))
+elif os.path.exists(default_file):
+    test_data = default_data
+else:
+    test_data = None
 
+# ============================================
+# EVALUATE IF DATA AND TRAIN BUTTON ARE READY
+# ============================================
+if test_data is not None:
     X_test = test_data.iloc[:, :-1]
     y_test = test_data.iloc[:, -1]
 
-    # ============================================
-    # HANDLE "TRAIN & EVALUATE" BUTTON
-    # ============================================
     if train_eval_clicked:
         # Check if model exists; if not, run its training script
         if not os.path.exists(model_file):
@@ -110,7 +131,6 @@ if uploaded_file is not None:
                     st.success(f"✅ {selected_model} trained successfully!")
                     if os.path.exists('test_data.csv'):
                         st.info("📁 `test_data.csv` has been created (or updated).")
-                    # Rerun to refresh the page so the file existence is updated
                     st.rerun()
         else:
             st.info(f"ℹ️ {selected_model} is already trained. Loading it...")
@@ -194,21 +214,18 @@ if uploaded_file is not None:
         st.info("👈 Select a model and click **'Train & Evaluate Selected'** to get results.")
 
 else:
-    st.info("👆 Please upload a CSV file first.")
+    st.info("👆 Please upload a CSV file or generate `test_data.csv` by training a model.")
     st.markdown("""
     **Instructions:**
-    1. Upload a CSV file where the **last column is the target** (0 = No Disease, 1 = Disease).
-    2. Select a model from the sidebar.
-    3. Click **'Train & Evaluate Selected'** – if the model is not trained yet, it will train it.
-    4. View the results (metrics, confusion matrix, and classification report).
+    1. Click **'Train All Models'** (top‑right) or train any individual model to generate `test_data.csv`.
+    2. Alternatively, upload a CSV file where the **last column is the target** (0 = No Disease, 1 = Disease).
+    3. Select a model from the sidebar.
+    4. Click **'Train & Evaluate Selected'** – if the model is not trained yet, it will train it.
+    5. View the results (metrics, confusion matrix, and classification report).
     """)
 
 # ============================================
 # FOOTER
 # ============================================
 st.markdown("---")
-st.caption("Machine Learning Assignment 2")
-st.caption("Date : 16/8/2026")
-st.caption("Name : Dama Yogesh")
-st.caption("BITS ID : 2025AD05015")
-st.caption("❤️ Built with Streamlit | UCI Heart Disease Dataset")
+st.caption("❤️ Built with Streamlit | UCI Heart Disease Dataset | ML Assignment 2")
