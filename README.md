@@ -11,8 +11,8 @@
 
 **2. Clone the Repository**
 
-	git clone https://github.com/your-username/heart-disease-assignment.git
-	cd heart-disease-assignment
+	git clone https://github.com/2025ad05015-YogeshDama/ML_assgn2.git
+	cd ML_assgn2
 
 **3. Create a Virtual Environment (Recommended)**
 
